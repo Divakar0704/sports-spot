@@ -1,0 +1,48 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 32px;
+  background-color: #FDFFFE;
+  color: #012109;
+  flex-wrap: wrap;
+}
+
+.logoName {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logoName .name {
+  font-size: 29px;
+  font-weight: bold;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  gap: 16px;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-links li {
+  font-size: 14px;
+}
+
+.nav-links a {
+  /* height: 7px; */
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease-in-out;
+  border-radius: 50px;
+  padding: 9px;
+}
+
+.nav-links a:hover {
+ transform: translateY(-3px);
+ background-color: rgba(255, 228, 196, 0.322);
+
+}
