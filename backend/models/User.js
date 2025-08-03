@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
-  name: String,
-  email: { type: String, unique: true },
-  password: String, // optional if doing OAuth later
-  role: { type: String, enum: ['player', 'owner', 'admin'], default: 'player' }
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: false },
+  userType: { type: String, enum: ['player', 'courtOwner', 'admin'], required: true },
+  googleId: String,
 });
 
 export default mongoose.model('User', userSchema);

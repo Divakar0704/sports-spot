@@ -14,6 +14,7 @@ import Dashboard from './pages/Dashbords/Dashboard';
 import MyBookings from './pages/MyBookings/MyBookings';
 import FindCourts from './pages/FindCourts/FindCourts';
 import Favorites from './pages/Favorites/Favorites';
+import OAuthSuccess from './pages/OAuthSuccess';
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
       
       <Routes>
         <Route path="/" element={<HomeSection/>} />
+        <Route path="/oauth-success" element={<OAuthSuccess />} />
         <Route path="/player/favourites" element={<Favorites />} />
         <Route path="/court/:id" element={<CourtDetails />} />
          <Route path="/player/bookings" element={<MyBookings />} />

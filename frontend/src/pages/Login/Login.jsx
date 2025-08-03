@@ -1,34 +1,42 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import axios from '../../api/axiosInstance';
+import GoogleLoginButton from '../../components/GoogleLoginButton';
+
 
 export default function Login() {
-  const { setLogin, setUserType, setEmail } = useAuth();
+  const { setLogin, setUserType, setUserData, setEmail } = useAuth();
   const navigate = useNavigate();
   const [emailInput, setEmailInput] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    try {
+      const response = await axios.post('/login', {
+        email: emailInput,
+        password,
+      });
 
-    // Detect user type
-    let userType = 'player';
-    if (emailInput.includes('seller')) userType = 'courtOwner';
-    if (emailInput.includes('admin')) userType = 'admin';
+      const { userType, email, ...rest } = response.data;
 
-    if (emailInput && password) {
+      // Set context state
       setLogin(true);
       setUserType(userType);
-      setEmail(emailInput);
+      setUserData(response.data); // Store full user info (Mongo _id, etc.)
+      setEmail(email); // Optional if you're accessing email directly
 
-      localStorage.setItem('userType', userType);
-      localStorage.setItem('email', emailInput);
+      // No need to save manually to localStorage - AuthContext handles that
 
-      // Clear inputs (after storing)
+      // Clear input fields
       setEmailInput('');
       setPassword('');
 
-      navigate('/dashboard');
+      // Redirect user based on role
+      navigate('/dashboard'); // or use role-based routing
+    } catch (error) {
+      alert('Login failed: ' + (error.response?.data?.message || 'Server error'));
     }
   };
 
@@ -75,6 +83,7 @@ export default function Login() {
           >
             Sign In
           </button>
+          <GoogleLoginButton />
         </form>
 
         <div className="mt-6 text-sm text-gray-500 bg-gray-100 p-4 rounded-md">

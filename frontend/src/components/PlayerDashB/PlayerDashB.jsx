@@ -28,7 +28,7 @@ export default function PlayerDashboard() {
     <div className="space-y-10">
       {/* Header */}
       <div className="GetStarted mb-7 flex-col flex items-center justify-center bg-gradient-to-r from-blue-500 via-teal-400 to-green-400 rounded-xl text-white p-4">
-        <h2 className="text-3xl font-bold mb-2">Welcome back, John!</h2>
+        <h2 className="text-3xl font-bold mb-2">Welcome back, Divakar!</h2>
         <p className="mb-2">Ready to book your next game?</p>
       </div>
 
