@@ -3,27 +3,17 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const OAuthSuccess = () => {
-  const { setLogin, setEmail, setUserType, setUserData } = useAuth();
+  const { loginUser } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const email = params.get('email');
-    const userType = params.get('userType') || 'player'; // default to 'player' if not provided
-    console.log('OAuth redirect query:', location.search);
+    const userType = params.get('userType') || 'player';
 
     if (email && userType) {
-      const userData = { email, userType };
-
-      setLogin(true);
-      setEmail(email);
-      setUserType(userType);
-      setUserData(userData);
-
-      localStorage.setItem('user', JSON.stringify(userData)); // optionally add here
-
-      // Conditional navigation (optional)
+      loginUser({ email, userType });
       navigate('/dashboard');
     } else {
       navigate('/login');

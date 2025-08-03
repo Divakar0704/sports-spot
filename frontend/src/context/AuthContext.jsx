@@ -1,62 +1,62 @@
 import { createContext, useContext, useState, useEffect } from "react";
 
-// 1. Create context
 const AuthContext = createContext();
 
-// 2. Create provider
 export const AuthProvider = ({ children }) => {
-  const [login, setLogin] = useState(false); // default to false
-  const [userType, setUserType] = useState('player');
-  const [userData, setUserData] = useState(null);
+  const [login, setLogin] = useState(false);
+  const [userType, setUserType] = useState(null);
   const [email, setEmail] = useState(null);
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Auto-read from localStorage on app load
   useEffect(() => {
-    const storedLogin = localStorage.getItem("login") === "true";
-    const storedType = localStorage.getItem("userType");
-    const storedUser = JSON.parse(localStorage.getItem("userData"));
-    const storedEmail = localStorage.getItem("email");
-
-    setLogin(storedLogin);
-    if (storedType) setUserType(storedType);
-    if (storedUser) setUserData(storedUser);
-    if (storedEmail) setEmail(storedEmail);
+    const user = localStorage.getItem('user');
+    if (user) {
+      try {
+        const parsed = JSON.parse(user);
+        setLogin(true);
+        setUserType(parsed.userType || 'player');
+        setEmail(parsed.email);
+        setUserData(parsed);
+      } catch (err) {
+        console.error("❌ Error parsing user from localStorage", err);
+      }
+    }
+    setLoading(false);
   }, []);
 
-  // Save to localStorage on change
   useEffect(() => {
-    localStorage.setItem("login", login);
-    localStorage.setItem("userType", userType);
-    localStorage.setItem("userData", JSON.stringify(userData));
-    localStorage.setItem("email", email);
-  }, [login, userType, userData, email]);
+    if (login && userType && email) {
+      localStorage.setItem('user', JSON.stringify({ email, userType }));
+    } else {
+      localStorage.removeItem('user');
+    }
+  }, [login, userType, email]);
 
-  // ✅ Central login handler for both email/password & Google
-  const loginUser = ({ email, userType, userData = null }) => {
+  const loginUser = ({ email, userType }) => {
     setLogin(true);
-    setEmail(email);
     setUserType(userType);
-    setUserData(userData || { email, userType }); // fallback if full data not fetched
+    setEmail(email);
+    setUserData({ email, userType });
+    localStorage.setItem('user', JSON.stringify({ email, userType }));
   };
 
   return (
-    <AuthContext.Provider
-      value={{
-        login,
-        email,
-        userType,
-        userData,
-        loginUser,
-        setLogin,
-        setEmail,
-        setUserType,
-        setUserData,
-      }}
-    >
+    <AuthContext.Provider value={{
+      login,
+      userType,
+      email,
+      userData,
+      loading,
+      loginUser,
+      setLogin,
+      setUserType,
+      setEmail,
+      setUserData
+    }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-// 3. Hook to use context
 export const useAuth = () => useContext(AuthContext);
